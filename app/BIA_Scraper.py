@@ -576,121 +576,143 @@ class BIACase:
                 else 'female' if female > male \
                 else 'unkown'
 
-#     def get_applicant_indigenous_status(self) -> str:
-#         '''
-#         • If the term "indigenous" appears in the document, the field will return 
-#         the name of asylum seeker's tribe/nation/group. Cuurently, the field will return 
-#         the two tokens that precede "indigenous;" this method needs to be fine-tuned and 
-#         validated.
-#         '''
-#         indigenous: List[str]
-#         indigenous = [
-#             'indigenous'
-#         ]
+    def get_applicant_indigenous_status(self) -> str:
+        '''
+        • If the term "indigenous" appears in the document, the field will return 
+        the name of asylum seeker's tribe/nation/group. Cuurently, the field will return 
+        the two tokens that precede "indigenous;" this method needs to be fine-tuned and 
+        validated.
+        '''
+        indigenous: List[str]
+        indigenous = [
+            'indigenous'
+        ]
 
-#         similar_indig: Callable[[str, float], Union[str, None]]
-#         similar_indig = similar_in_list(indigenous)
+        similar_indig: Callable[[str, float], Union[str, None]]
+        similar_indig = similar_in_list(indigenous)
 
-#         for token in self.doc:
+        for token in self.doc:
 
-#             sent: str
-#             sent = token.sent.text.lower()
+            sent: str
+            sent = token.sent.text.lower()
 
-#             s: Union[str, None]
-#             s = similar_indig(token.text.lower(), 0.9)
+            s: Union[str, None]
+            s = similar_indig(token.text.lower(), 0.9)
 
-#             if s == 'indigenous group':
-#                 prev_wrds = self.doc[[token.i-1, token.i-2]].text.lower()
-#                 # return the name of the specific group/nation
-#                 return prev_wrds   
+            if s == 'indigenous group':
+                prev_wrds = self.doc[[token.i-1, token.i-2]].text.lower()
+                # return the name of the specific group/nation
+                return prev_wrds   
 
-#    def get_applicant_language(self) -> str:
-#         '''
-#         • If the term "native speaker" appears in the document, the field will return 
-#         the asylum seeker's stated native language. Cuurently, the field will return 
-#         the two tokens that precede "native speaker;" this method needs to be fine-tuned and 
-#         validated.
-#         '''
-#         for token in self.doc:
+    def get_applicant_language(self) -> str:
+        '''
+        • If the term "native speaker" appears in the document, the field will return 
+        the asylum seeker's stated native language. Cuurently, the field will return 
+        the two tokens that precede "native speaker;" this method needs to be fine-tuned and 
+        validated.
+        '''
+        for token in self.doc:
 
-#             sent: str
-#             sent = token.sent.text.lower()
+            sent: str
+            sent = token.sent.text.lower()
 
-#             s: Union[str, None]
-#             s = similar_pg(token.text.lower(), 0.9)
+            s: Union[str, None]
+            s = similar_pg(token.text.lower(), 0.9)
 
-#             if s == 'native speaker' or s == 'native speakers':
-#                 next_wrds = self.doc[[token.i+1, token.i+2]].text.lower()
-#                 return next_wrds
+            if s == 'native speaker' or s == 'native speakers':
+                next_wrds = self.doc[[token.i+1, token.i+2]].text.lower()
+                return next_wrds
         
-#         return 'Ability to testify in English' 
+        return 'Ability to testify in English' 
 
-#     def get_applicant_access_interpeter(self) -> str
-#         '''
-#         • If the terms "interpreter" or "translator" appear in the document, 
-#         the field will return whether the asylum seeker had access to an 
-#         interpreter during their hearings. Curently, the field's output is 
-#         dependent on occurance of specific tokens in the document; this method 
-#         needs to be fine-tuned and validated.
-#         '''
-#         for token in self.doc:
+    def get_applicant_access_interpeter(self) -> str
+        '''
+        • If the terms "interpreter" or "translator" appear in the document, 
+        the field will return whether the asylum seeker had access to an 
+        interpreter during their hearings. Curently, the field's output is 
+        dependent on occurance of specific tokens in the document; this method 
+        needs to be fine-tuned and validated.
+        '''
+        for token in self.doc:
 
-#             sent: str
-#             sent = token.sent.text.lower()
+            sent: str
+            sent = token.sent.text.lower()
 
-#             s: Union[str, None]
-#             s = similar_pg(token.text.lower(), 0.9)
+            s: Union[str, None]
+            s = similar_pg(token.text.lower(), 0.9)
 
-#             if s == 'interpreter' or s == 'translator':
-#                 surrounding: Span
-#                 surrounding = self.get_surrounding_sents(token)
+            if s == 'interpreter' or s == 'translator':
+                surrounding: Span
+                surrounding = self.get_surrounding_sents(token)
 
-#                 next_word = self.doc[token.i+1].text.lower()
-#                 if 'requested' in surrounding.text.lower() \
-#                     and 'granted' in surrounding.text.lower(): 
-#                     return 'Had access'
-#                 elif 'requested' in surrounding.text.lower() \
-#                     and 'was present' in surrounding.text.lower(): 
-#                     return 'Yes'
-#                 elif 'requested' in surrounding.text.lower() \
-#                     and 'granted' not in surrounding.text.lower(): 
-#                     return 'No'
-#                 elif 'requested' in surrounding.text.lower() \
-#                     and 'was present' in surrounding.text.lower(): 
-#                     return 'No'
+                next_word = self.doc[token.i+1].text.lower()
+                if 'requested' in surrounding.text.lower() \
+                    and 'granted' in surrounding.text.lower(): 
+                    return 'Had access'
+                elif 'requested' in surrounding.text.lower() \
+                    and 'was present' in surrounding.text.lower(): 
+                    return 'Yes'
+                elif 'requested' in surrounding.text.lower() \
+                    and 'granted' not in surrounding.text.lower(): 
+                    return 'No'
+                elif 'requested' in surrounding.text.lower() \
+                    and 'was present' in surrounding.text.lower(): 
+                    return 'No'
 
-#     def get_applicant_determined_credibility(self) -> str:
-#         '''
-#         • Returns the judge's decision on whether the applicant is a credible witness.
-#         Curently, the field's output is dependent on occurance of specific tokens 
-#         in the document; this method needs to be fine-tuned and validated.
-#         '''
+    def get_applicant_determined_credibility(self) -> str:
+        '''
+        • Returns the judge's decision on whether the applicant is a credible witness.
+        Curently, the field's output is dependent on occurance of specific tokens 
+        in the document; this method needs to be fine-tuned and validated.
+        '''
+        evidence_terms: List[str]
+        evidence_terms = [
+            'corroborating evidence',
+            'documentary evidence',
+        ]
 
-#         credibility = [
-#             'credible'
-#         ]
+        testimony_terms: List[str]
+        testimony_terms = [
+            'testimony',
+            'oral testimony',
+            'explanation'
+        ]
 
-#         similar_cred: Callable[[str, float], Union[str, None]]
-#         similar_cred = similar_in_list(credibility)
+        similar_ev_term: Callable[[str, float], Union[str, None]]
+        similar_ev_term = similar_in_list(evidence_terms)
 
-#          for token in self.doc:
+        similar_testimony_terms: Callable[[str, float], Union[str, None]]
+        similar_testimony_terms = similar_in_list(testimony_terms)
 
-#             sent: str
-#             sent = token.sent.text.lower()
+        based_cred = defaultdict(lambda: [])
 
-#             s: Union[str, None]
-#             s = similar_cred(token.text.lower(), 0.9)
+        for token in self.doc:
+            if testimony_terms(token.lemma_.lower(), 0.9):
+                sent: Span
+                sent = token.sent
+                for w in sent:
+                    testimony_term = similar_testimony_terms(w.lemma_lower(), 0.86)
+                    if testimony_term and 'credible' in token.sent.text:
+                        based_v['testimony_based'] += [token.lemma_.lower()]
+                    elif testimony_term and 'consistent' in token.sent.text:
+                        based_v['testimony_based'] += [token.lemma_.lower()]
 
-#             if s == 'credible':
-#                 prev_word = self.doc[token.i-1].text.lower()
-#                 next_word = self.doc[token.i+1].text.lower()
-#                 if not similar(prev_word, 'not', 0.95) \
-#                     and not similar(next_word, 'witness', 0.95): 
-#                     return 'Yes'
-#                 else:
-#                     return 'No'
-#                 if s not in self.doc:
-#                     return 'N/A to case'
+            elif similar_ev_term(token.text.lower(), 0.86):
+                sent: Span
+                sent = self.get_surrounding_sents(token)
+                for w in sent:
+                    evidence_term = similar_ev_term(w.lemma_.lower(), 0.86)
+                    if evidence_term and 'credible' in token.sent.text:
+                        based_v['evidence_based'] += [token.lemma_.lower()]
+                    if evidence_term and 'consistent' in token.sent.text:
+                        based_v['evidence_based'] += [token.lemma_.lower()]
+
+        if based_cred:
+            based_cred: Dict[str, List[str]]
+            based_cred = {k:list(set(v)) for k, v in based_cred.items()}
+
+        return based_cred if based_cred else None
+
     
     def check_for_one_year(self) -> bool:
         """
