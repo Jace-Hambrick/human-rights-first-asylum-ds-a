@@ -65,6 +65,11 @@ pipenv install --dev
 pipenv shell
 sudo apt-get install tesseract-ocr
 sudo apt-get install poppler-utils --fix-missing
+
+NOTE: if you are on mac you will use these commands instead of the previous two.
+brew install tesseract
+brew install poppler
+
 python(3) -m spacy download en_core_web_sm
 uvicorn app.main:app --reload
 
